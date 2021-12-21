@@ -15,12 +15,15 @@ namespace CasinoMortale
 	{
 		int directionPin;
 		int stepPin;
-		int stepsPerRevolution;
-		int numMicrostepsPerStep;
+		int sleepPin;
 
 	public:
-		Lift(int directionPin, int stepPin, int stepsPerRevolution = 200, int numMicrostepsPerSteps = 1);
+		Lift(int directionPin, int stepPin, int sleepPin);
 		void initialize();
+		void moveUp();
+		void moveDown();
+		void sleep();
+		void wake();
 	};
 }
 
