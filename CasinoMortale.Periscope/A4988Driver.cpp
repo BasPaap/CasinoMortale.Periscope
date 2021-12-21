@@ -1,6 +1,6 @@
 #include "A4988Driver.h"
 
-Bas::A4988Driver::A4988Driver(int directionPin, int stepPin, int sleepPin, int stepsPerRevolution, int numMicrostepsPerSteps) : directionPin{ directionPin }, stepPin{ stepPin }, sleepPin{ sleepPin }, stepsPerRevolution{ stepsPerRevolution }, numMicrostepsPerStep{ numMicrostepsPerStep }
+Bas::A4988Driver::A4988Driver(int directionPin, int stepPin, int sleepPin) : directionPin{ directionPin }, stepPin{ stepPin }, sleepPin{ sleepPin }
 {
 }
 
@@ -11,34 +11,29 @@ void Bas::A4988Driver::initialize()
 	pinMode(stepPin, OUTPUT);
 	pinMode(directionPin, OUTPUT);
 	pinMode(sleepPin, OUTPUT);
-
-	lastUpdateTime = millis();
 }
 
-void Bas::A4988Driver::update()
+void Bas::A4988Driver::move(int numSteps, bool isMovingClockwise, int microstepDurationInMilliseconds)
 {
-	if (numStepsRemaining > 0)
+	if (microstepDurationInMilliseconds < 1)
 	{
-		digitalWrite(stepPin, HIGH);
-		digitalWrite(stepPin, LOW);		
-		--numStepsRemaining;
+		microstepDurationInMilliseconds = 1;
 	}
 
-	lastUpdateTime = millis();
-}
-
-void Bas::A4988Driver::move(int numSteps, bool isMovingClockwise, int numRevolutionsPerMinute)
-{
 	Serial.print("Moving stepper motor ");
 	Serial.print(numSteps);
 	Serial.print(" steps ");
 	Serial.print(isMovingClockwise ? "clockwise" : "counterclockwise");
 	Serial.print(" at ");
-	Serial.print(numRevolutionsPerMinute);
-	Serial.print(" RPM.");
+	Serial.print(microstepDurationInMilliseconds);
+	Serial.print(" milliseconds per microstep.");
 
 	digitalWrite(directionPin, isMovingClockwise ? HIGH : LOW);
 
-	numStepsRemaining = numSteps;
-	currentNumRevolutionsPerMinute = numRevolutionsPerMinute;
+	for (int i = 0; i < numSteps; i++)
+	{
+		digitalWrite(stepPin, HIGH);
+		digitalWrite(stepPin, LOW);
+		delay(microstepDurationInMilliseconds);
+	}
 }

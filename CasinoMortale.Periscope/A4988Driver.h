@@ -15,18 +15,12 @@ namespace Bas
 	{
 		int directionPin;
 		int stepPin;
-		int sleepPin;
-		int stepsPerRevolution;
-		int numMicrostepsPerStep;
-		int numStepsRemaining;
-		int currentNumRevolutionsPerMinute;
-		long lastUpdateTime;
+		int sleepPin;		
 
 	public:
-		A4988Driver(int directionPin, int stepPin, int sleepPin, int stepsPerRevolution = 200, int numMicrostepsPerSteps = 1);
-		void initialize();
-		void update();
-		void move(int numSteps, bool isMovingClockwise, int speed);
+		A4988Driver(int directionPin, int stepPin, int sleepPin);
+		void initialize();		
+		void move(int numMicrosteps, bool isMovingClockwise, int microstepDurationInMilliseconds);
 	};
 }
 
