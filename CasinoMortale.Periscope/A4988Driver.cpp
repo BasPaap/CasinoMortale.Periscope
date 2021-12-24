@@ -85,8 +85,8 @@ void Bas::A4988Driver::moveToHomePosition()
 	Serial.println("Moving stepper motor to home position.");
 
 	wake();
+	digitalWrite(directionPin, HIGH);	// Move down.
 
-	Serial.println(digitalRead(endStopBottomPin));
 	while (digitalRead(endStopBottomPin) == HIGH)
 	{
 		digitalWrite(stepPin, HIGH);
