@@ -22,6 +22,21 @@ void CasinoMortale::Swivel::turn(int destinationPosition, float speed)
 	Serial.print(speed);
 	Serial.println(" degrees per second.");
 
-	
+	servo.write(destinationPosition);
+
+	delay(2000);
+
+
+	//unsigned long startTime = millis();
+	//float currentPosition = 0;// servo.read();
+	//
+	//while (currentPosition != destinationPosition)
+	//{
+	//	float timeDelta = (millis() - startTime) / 1000.0f;
+	//	float incrementValue = (currentPosition > destinationPosition ? -1 : 1) * speed * timeDelta;
+	//	currentPosition += incrementValue;
+	//	servo.write((int)currentPosition);		
+	//	startTime = millis();
+	//}
 }
 
