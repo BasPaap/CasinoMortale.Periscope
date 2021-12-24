@@ -9,13 +9,13 @@
 #include "WProgram.h"
 #endif
 
+#include "A4988Driver.h"
+
 namespace CasinoMortale
 {
 	class Lift
 	{
-		int directionPin;
-		int stepPin;
-		int sleepPin;
+		Bas::A4988Driver stepperDriver;
 
 	public:
 		Lift(int directionPin, int stepPin, int sleepPin);
@@ -26,5 +26,4 @@ namespace CasinoMortale
 		void wake();
 	};
 }
-
 #endif

@@ -21,6 +21,8 @@ namespace Bas
 		A4988Driver(int directionPin, int stepPin, int sleepPin);
 		void initialize();		
 		void move(int numMicrosteps, bool isMovingClockwise, int microstepDurationInMilliseconds);
+		void sleep();
+		void wake();
 	};
 }
 

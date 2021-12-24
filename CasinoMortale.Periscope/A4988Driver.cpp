@@ -6,7 +6,13 @@ Bas::A4988Driver::A4988Driver(int directionPin, int stepPin, int sleepPin) : dir
 
 void Bas::A4988Driver::initialize()
 {
-	Serial.println("Initializing A4988Driver.");
+	Serial.print("Initializing A4988Driver. Direction pin: ");
+	Serial.print(directionPin);
+	Serial.print(", step pin: ");
+	Serial.print(stepPin);
+	Serial.print(", sleep pin: ");
+	Serial.print(sleepPin);
+	Serial.print(".");
 
 	pinMode(stepPin, OUTPUT);
 	pinMode(directionPin, OUTPUT);
@@ -15,10 +21,12 @@ void Bas::A4988Driver::initialize()
 
 void Bas::A4988Driver::move(int numSteps, bool isMovingClockwise, int microstepDurationInMilliseconds)
 {
-	if (microstepDurationInMilliseconds < 1)
+	if (microstepDurationInMilliseconds < 2)
 	{
-		microstepDurationInMilliseconds = 1;
+		microstepDurationInMilliseconds = 2;
 	}
+
+	int halfMicrostepDuration = microstepDurationInMilliseconds / 2;
 
 	Serial.print("Moving stepper motor ");
 	Serial.print(numSteps);
@@ -28,12 +36,25 @@ void Bas::A4988Driver::move(int numSteps, bool isMovingClockwise, int microstepD
 	Serial.print(microstepDurationInMilliseconds);
 	Serial.print(" milliseconds per microstep.");
 
-	digitalWrite(directionPin, isMovingClockwise ? HIGH : LOW);
-
-	for (int i = 0; i < numSteps; i++)
+	digitalWrite(directionPin, isMovingClockwise ? LOW : HIGH);
+		
+	for (int x = 0; x < numSteps; x++)
 	{
 		digitalWrite(stepPin, HIGH);
+		delay(halfMicrostepDuration);
 		digitalWrite(stepPin, LOW);
-		delay(microstepDurationInMilliseconds);
-	}
+		delay(halfMicrostepDuration);
+	}	
+}
+
+void Bas::A4988Driver::sleep()
+{
+	Serial.print("Putting A4988 driver in sleep mode.");
+	digitalWrite(sleepPin, LOW);
+}
+
+void Bas::A4988Driver::wake()
+{
+	Serial.print("Waking A4988 driver from sleep mode.");
+	digitalWrite(sleepPin, HIGH);
 }
