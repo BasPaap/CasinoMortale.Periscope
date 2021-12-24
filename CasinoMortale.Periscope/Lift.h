@@ -18,7 +18,7 @@ namespace CasinoMortale
 		Bas::A4988Driver stepperDriver;
 
 	public:
-		Lift(int directionPin, int stepPin, int sleepPin);
+		Lift(int directionPin, int stepPin, int sleepPin, int enablePin, int endStopTopPin, int endStopBottomPin);
 		void initialize();
 		void moveUp();
 		void moveDown();

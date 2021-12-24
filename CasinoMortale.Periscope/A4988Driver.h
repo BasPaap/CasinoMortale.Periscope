@@ -16,11 +16,15 @@ namespace Bas
 		int directionPin;
 		int stepPin;
 		int sleepPin;		
-
+		int enablePin;
+		int endStopTopPin;
+		int endStopBottomPin;
+		
 	public:
-		A4988Driver(int directionPin, int stepPin, int sleepPin);
+		A4988Driver(int directionPin, int stepPin, int sleepPin, int enablePin, int endStopTopPin, int endStopBottomPin);
 		void initialize();		
 		void move(int numMicrosteps, bool isMovingClockwise, int microstepDurationInMilliseconds);
+		void moveToHomePosition();
 		void sleep();
 		void wake();
 	};

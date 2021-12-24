@@ -1,6 +1,6 @@
 #include "Lift.h"
 
-CasinoMortale::Lift::Lift(int directionPin, int stepPin, int sleepPin) : stepperDriver{ directionPin, stepPin, sleepPin }
+CasinoMortale::Lift::Lift(int directionPin, int stepPin, int sleepPin, int enablePin, int endStopTopPin, int endStopBottomPin) : stepperDriver{ directionPin, stepPin, sleepPin, enablePin, endStopTopPin, endStopBottomPin }
 {
 }
 
@@ -8,6 +8,7 @@ void CasinoMortale::Lift::initialize()
 {
 	Serial.println("Initializing lift.");
 	stepperDriver.initialize();
+	stepperDriver.moveToHomePosition();
 	stepperDriver.sleep();
 }
 

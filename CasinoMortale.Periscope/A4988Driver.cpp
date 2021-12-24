@@ -1,6 +1,11 @@
 #include "A4988Driver.h"
 
-Bas::A4988Driver::A4988Driver(int directionPin, int stepPin, int sleepPin) : directionPin{ directionPin }, stepPin{ stepPin }, sleepPin{ sleepPin }
+Bas::A4988Driver::A4988Driver(int directionPin, int stepPin, int sleepPin, int enablePin, int endStopTopPin, int endStopBottomPin) :	directionPin{ directionPin }, 
+																																		stepPin{ stepPin }, 
+																																		sleepPin{ sleepPin }, 
+																																		enablePin{ enablePin },
+																																		endStopTopPin{ endStopTopPin }, 
+																																		endStopBottomPin { endStopBottomPin }
 {
 }
 
@@ -12,11 +17,23 @@ void Bas::A4988Driver::initialize()
 	Serial.print(stepPin);
 	Serial.print(", sleep pin: ");
 	Serial.print(sleepPin);
+	Serial.print(", enable pin: ");
+	Serial.print(enablePin);
+	Serial.print(", endstop top pin: ");
+	Serial.print(endStopTopPin);
+	Serial.print(", endstop bottom pin: ");
+	Serial.print(endStopBottomPin);
 	Serial.println(".");
 
 	pinMode(stepPin, OUTPUT);
 	pinMode(directionPin, OUTPUT);
 	pinMode(sleepPin, OUTPUT);
+	pinMode(enablePin, OUTPUT);
+	pinMode(endStopTopPin, INPUT_PULLUP);
+	pinMode(endStopBottomPin, INPUT_PULLUP);
+	
+	digitalWrite(enablePin, LOW);	// Enable the stepper driver.
+	sleep();
 }
 
 void Bas::A4988Driver::move(int numSteps, bool isMovingClockwise, int microstepDurationInMilliseconds)
@@ -37,14 +54,48 @@ void Bas::A4988Driver::move(int numSteps, bool isMovingClockwise, int microstepD
 	Serial.println(" milliseconds per microstep.");
 
 	digitalWrite(directionPin, isMovingClockwise ? LOW : HIGH);
+
+	bool isMovingUp = isMovingClockwise;
 		
 	for (int x = 0; x < numSteps; x++)
 	{
+		if (isMovingUp && digitalRead(endStopTopPin) == LOW)
+		{
+			Serial.println("Top endstop reached");
+			break;
+		}
+
+		if (!isMovingUp && digitalRead(endStopBottomPin) == LOW)
+		{
+			Serial.println("Bottom endstop reached");
+			break;
+		}
+
 		digitalWrite(stepPin, HIGH);
 		delay(halfMicrostepDuration);
 		digitalWrite(stepPin, LOW);
 		delay(halfMicrostepDuration);
 	}	
+
+	Serial.println("Stepper motor reached position.");
+}
+
+void Bas::A4988Driver::moveToHomePosition()
+{
+	Serial.println("Moving stepper motor to home position.");
+
+	wake();
+
+	Serial.println(digitalRead(endStopBottomPin));
+	while (digitalRead(endStopBottomPin) == HIGH)
+	{
+		digitalWrite(stepPin, HIGH);
+		delay(1);
+		digitalWrite(stepPin, LOW);
+		delay(1);
+	}
+
+	Serial.println("Home position reached.");
 }
 
 void Bas::A4988Driver::sleep()
