@@ -28,6 +28,7 @@ void setup() {
 }
 
 void loop() {
+	Serial.println("Starting sequence.");
 	lift.wake();
 	lift.moveUp();
 	/*swivel.turn(leftPosition, swivelSpeed);

@@ -12,7 +12,7 @@ void Bas::A4988Driver::initialize()
 	Serial.print(stepPin);
 	Serial.print(", sleep pin: ");
 	Serial.print(sleepPin);
-	Serial.print(".");
+	Serial.println(".");
 
 	pinMode(stepPin, OUTPUT);
 	pinMode(directionPin, OUTPUT);
@@ -34,7 +34,7 @@ void Bas::A4988Driver::move(int numSteps, bool isMovingClockwise, int microstepD
 	Serial.print(isMovingClockwise ? "clockwise" : "counterclockwise");
 	Serial.print(" at ");
 	Serial.print(microstepDurationInMilliseconds);
-	Serial.print(" milliseconds per microstep.");
+	Serial.println(" milliseconds per microstep.");
 
 	digitalWrite(directionPin, isMovingClockwise ? LOW : HIGH);
 		
@@ -49,12 +49,12 @@ void Bas::A4988Driver::move(int numSteps, bool isMovingClockwise, int microstepD
 
 void Bas::A4988Driver::sleep()
 {
-	Serial.print("Putting A4988 driver in sleep mode.");
+	Serial.println("Putting A4988 driver in sleep mode.");
 	digitalWrite(sleepPin, LOW);
 }
 
 void Bas::A4988Driver::wake()
 {
-	Serial.print("Waking A4988 driver from sleep mode.");
+	Serial.println("Waking A4988 driver from sleep mode.");
 	digitalWrite(sleepPin, HIGH);
 }
