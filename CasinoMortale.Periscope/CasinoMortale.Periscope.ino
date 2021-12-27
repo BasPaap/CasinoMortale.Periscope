@@ -5,6 +5,8 @@
 */
 
 #include <Servo.h>
+#include <avr/sleep.h>
+#include <avr/wdt.h>
 #include "Swivel.h"
 #include "Lift.h"
 
@@ -51,5 +53,28 @@ void loop() {
 	lift.sleep();
 
 	Serial.println("Sequence finished.");
-	delay(10000);
+	sleep();
+}
+
+void sleep()
+{
+	Serial.println("Going to sleep.");
+	delay(500);
+	// allow changes, disable reset
+	WDTCSR = bit(WDCE) | bit(WDE);
+	// set interrupt mode and an interval 
+	WDTCSR = bit(WDIE) | bit(WDP3) | bit(WDP0);    // set WDIE, and 8 seconds delay
+	wdt_reset();  // pat the dog
+
+	sleep_enable();
+	set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+	sleep_cpu();
+
+	Serial.println("Woke up from sleep.");
+	sleep_disable();
+}
+
+ISR(WDT_vect)
+{
+	wdt_disable();
 }
