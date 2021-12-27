@@ -32,12 +32,21 @@ void CasinoMortale::Swivel::turn(float destinationPosition, float speed)
 		{
 			float timeDelta = (millis() - lastTime) / 1000.0f;
 			currentPosition += timeDelta * speed * (currentPosition > destinationPosition ? -1 : 1);
-			
+
 			if (abs(currentPosition - destinationPosition) < 1.0f)
 			{
 				currentPosition = destinationPosition;
-			}
 
+				if (currentPosition < 0.0f)
+				{
+					currentPosition = 0.0f;
+				}
+				else if (currentPosition > 180.0f)
+				{
+					currentPosition = 180.0f;
+				}
+			}
+			
 			servo.write(currentPosition);
 			lastTime = millis();
 		}
