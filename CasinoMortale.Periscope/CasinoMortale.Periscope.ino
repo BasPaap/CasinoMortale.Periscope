@@ -4,9 +4,8 @@
  Author:	Bas Paap
 */
 
+#include <LowPower.h>
 #include <Servo.h>
-#include <avr/sleep.h>
-#include <avr/wdt.h>
 #include "Swivel.h"
 #include "Lift.h"
 
@@ -21,6 +20,7 @@ const float swivelSpeed = 45.0f;
 const int leftPosition = 0;
 const int rightPosition = 180;
 const int centerPosition = 90;
+const int numSecondsToSleep = 60;
 
 CasinoMortale::Swivel swivel { servoPin };
 CasinoMortale::Lift lift { directionPin, stepPin, sleepPin, enableStepperDriverPin, endStopTopPin, endStopBottomPin };
@@ -58,23 +58,16 @@ void loop() {
 
 void sleep()
 {
-	Serial.println("Going to sleep.");
+	Serial.print("Going to sleep for approximately ");
+	Serial.print(numSecondsToSleep);
+	Serial.println(" seconds.");
 	delay(500);
-	// allow changes, disable reset
-	WDTCSR = bit(WDCE) | bit(WDE);
-	// set interrupt mode and an interval 
-	WDTCSR = bit(WDIE) | bit(WDP3) | bit(WDP0);    // set WDIE, and 8 seconds delay
-	wdt_reset();  // pat the dog
 
-	sleep_enable();
-	set_sleep_mode(SLEEP_MODE_PWR_DOWN);
-	sleep_cpu();
+	for (size_t i = 0; i < numSecondsToSleep / 8; i++)
+	{
+		LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);
+	}	
 
-	Serial.println("Woke up from sleep.");
-	sleep_disable();
+	Serial.println("Awoke!");	
 }
 
-ISR(WDT_vect)
-{
-	wdt_disable();
-}
