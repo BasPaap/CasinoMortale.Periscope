@@ -38,11 +38,13 @@ void loop() {
 	Serial.println("Starting sequence.");
 	lift.wake();
 	lift.moveUp();
+	delay(2000);
 
 	swivel.turn(leftPosition, swivelSpeed);
+	delay(2000);
 	swivel.turn(rightPosition, swivelSpeed);
-	swivel.turn(centerPosition, swivelSpeed);
-	
+	delay(2000);
+	swivel.turn(centerPosition, swivelSpeed);	
 	delay(2000);
 
 	lift.moveDown();

@@ -12,9 +12,10 @@ void CasinoMortale::Swivel::initialize()
 
 	servo.attach(servoPin, minPulseWidth, maxPulseWidth);
 	servo.write(90);	
+	currentPosition = servo.read();
 }
 
-void CasinoMortale::Swivel::turn(int destinationPosition, float speed)
+void CasinoMortale::Swivel::turn(float destinationPosition, float speed)
 {
 	Serial.print("Swivelling to ");
 	Serial.print(destinationPosition);
@@ -22,21 +23,28 @@ void CasinoMortale::Swivel::turn(int destinationPosition, float speed)
 	Serial.print(speed);
 	Serial.println(" degrees per second.");
 
-	servo.write(destinationPosition);
+	long lastTime = millis();
+	currentPosition = servo.read();
 
-	delay(2000);
+	while (currentPosition != destinationPosition)
+	{
+		if (millis() > lastTime)
+		{
+			float timeDelta = (millis() - lastTime) / 1000.0f;
+			currentPosition += timeDelta * speed * (currentPosition > destinationPosition ? -1 : 1);
+			
+			if (abs(currentPosition - destinationPosition) < 1.0f)
+			{
+				currentPosition = destinationPosition;
+			}
 
+			servo.write(currentPosition);
+			lastTime = millis();
+		}
+	}
 
-	//unsigned long startTime = millis();
-	//float currentPosition = 0;// servo.read();
-	//
-	//while (currentPosition != destinationPosition)
-	//{
-	//	float timeDelta = (millis() - startTime) / 1000.0f;
-	//	float incrementValue = (currentPosition > destinationPosition ? -1 : 1) * speed * timeDelta;
-	//	currentPosition += incrementValue;
-	//	servo.write((int)currentPosition);		
-	//	startTime = millis();
-	//}
+	Serial.print("Servo has reached destination position of ");
+	Serial.print(destinationPosition);
+	Serial.println(" degrees.");
 }
 

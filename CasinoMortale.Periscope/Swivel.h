@@ -20,11 +20,12 @@ namespace CasinoMortale
 		const float speed = 200.0f;
 		Servo servo;
 		int servoPin;
+		float currentPosition;
 		
 	public:
 		Swivel(int pin);
 		void initialize();
-		void turn(int destinationPosition, float speed);
+		void turn(float destinationPosition, float speed);
 	};
 }
 
