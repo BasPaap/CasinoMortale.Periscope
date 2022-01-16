@@ -16,11 +16,13 @@ const int servoPin = 5;
 const int endStopTopPin = 6;
 const int endStopBottomPin = 7;
 const int enableStepperDriverPin = 8;
+const int statusLedPin = 9;
 const float swivelSpeed = 45.0f;
 const int leftPosition = 0;
 const int rightPosition = 180;
 const int centerPosition = 90;
 const int numSecondsToSleep = 60;
+const int statusLedDelay = 100;
 
 CasinoMortale::Swivel swivel { servoPin };
 CasinoMortale::Lift lift { directionPin, stepPin, sleepPin, enableStepperDriverPin, endStopTopPin, endStopBottomPin };
@@ -29,6 +31,10 @@ void setup() {
 	// Disable stepper driver as soon as possible.
 	pinMode(enableStepperDriverPin, OUTPUT);
 	digitalWrite(enableStepperDriverPin, HIGH);
+
+	// Set up status LED
+	pinMode(statusLedPin, OUTPUT);
+	digitalWrite(statusLedPin, LOW);
 
 	Serial.begin(9600);
 	
@@ -65,6 +71,9 @@ void sleep()
 
 	for (size_t i = 0; i < numSecondsToSleep / 8; i++)
 	{
+		digitalWrite(statusLedPin, HIGH);
+		delay(statusLedDelay);
+		digitalWrite(statusLedPin, LOW);
 		LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);
 	}	
 
