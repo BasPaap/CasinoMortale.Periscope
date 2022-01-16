@@ -15,13 +15,13 @@ void CasinoMortale::Lift::initialize()
 void CasinoMortale::Lift::moveUp()
 {
 	Serial.println("Moving lift up.");
-	stepperDriver.move(2000, true, 1);
+	stepperDriver.move(5000, true, 1);
 }
 
 void CasinoMortale::Lift::moveDown()
 {
 	Serial.println("Moving lift down.");
-	stepperDriver.move(2000, false, 1);
+	stepperDriver.move(5000, false, 1);
 }
 
 void CasinoMortale::Lift::sleep()
