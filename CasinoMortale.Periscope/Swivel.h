@@ -15,8 +15,8 @@ namespace CasinoMortale
 {
 	class Swivel
 	{	
-		const int minPulseWidth = 720;
-		const int maxPulseWidth = 2400;
+		const int minPulseWidth = 450;
+		const int maxPulseWidth = 2450;
 		const float speed = 200.0f;
 		Servo servo;
 		int servoPin;
